@@ -21,9 +21,12 @@ class Cameo(object):
             self._captureManager.writeImage('screenshot.png')
         elif keycode == 9: # tab
             if not self._captureManager.isWritingVideo:
+                print("start writing video...")
                 self._captureManager.startWritingVideo('screencast.avi')
             else:
                 self._captureManager.stopWritingVideo()
+                print("stop writing video...")
+
         elif keycode == 27: #escape
             self._windowManager.destoryWindow()
 

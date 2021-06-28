@@ -86,13 +86,17 @@ class CaptureManager(object):
     def writeImage(self, filename):
         self._imageFilename = filename
 
-    def startWritingVideo(self):
+    def startWritingVideo(self, filename, encoding = cv2.VideoWriter_fourcc('I','4','2','0')):
+        self._videoFilename = filename
+        self._videoEncoding = encoding
+
+    def stopWritingVideo(self):
         self._videoFilename = None
         self._videoEncoding = None
         self._videoWriter = None
 
     def _writeVideoFrame(self):
-        if not self.isWritingImage:
+        if not self.isWritingVideo:
             return
 
         if self._videoWriter is None:
@@ -104,11 +108,11 @@ class CaptureManager(object):
                     fps = self._fpsEstimate
 
             size = (int(self._capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                        int(self._capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+                    int(self._capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
-            self._videoWriter = cv2.VideoWriter(
-                self._videoFilename, self._videoEncoding, fps, size)
-            self._videoWriter(self._frame)
+            self._videoWriter = cv2.VideoWriter(self._videoFilename, self._videoEncoding, fps, size)
+
+        self._videoWriter.write(self._frame)
 
 class WindowManager(object):
     def __init__(self, windowName, KeypressCallback = None):
